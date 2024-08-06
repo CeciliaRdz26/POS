@@ -24,7 +24,7 @@
             @foreach($productos as $producto)
                 <tr>
                     <td class="py-2 px-4 border-b">{{ $producto->nombre }}</td>
-                    <td class="py-2 px-4 border-b">{{ $producto->categoria->nombre }}</td>
+                    <td class="py-2 px-4 border-b">{{ $producto->categoria->nombre_categoria }}</td>
                     <td class="py-2 px-4 border-b">{{ $producto->precio_venta }}</td>
                     <td class="py-2 px-4 border-b">{{ $producto->precio_compra }}</td>
                     <td class="py-2 px-4 border-b">{{ $producto->fecha_compra }}</td>

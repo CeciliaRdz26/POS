@@ -22,6 +22,9 @@
                 <th class="py-2 px-4 border-b">Teléfono</th>
                 <th class="py-2 px-4 border-b">Dirección</th>
                 <th class="py-2 px-4 border-b">RFC</th>
+                <th class="py-2 px-4 border-b">Razon Social</th>
+                <th class="py-2 px-4 border-b">Codigo Postal</th>
+                <th class="py-2 px-4 border-b">Regimen Fiscal</th>
                 <th class="py-2 px-4 border-b">Acciones</th>
             </tr>
         </thead>
@@ -34,6 +37,9 @@
                 <td class="py-2 px-4 border-b">{{ $cliente->telefono }}</td>
                 <td class="py-2 px-4 border-b">{{ $cliente->direccion }}</td>
                 <td class="py-2 px-4 border-b">{{ $cliente->rfc }}</td>
+                <td class="py-2 px-4 border-b">{{ $cliente->razon_social }}</td>
+                <td class="py-2 px-4 border-b">{{ $cliente->codigo_postal }}</td>
+                <td class="py-2 px-4 border-b">{{ $cliente->regimen_fiscal }}</td>
                 <td class="py-2 px-4 border-b">
                     <a href="{{ route('clientes.show', $cliente->id_cliente) }}" class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded">Ver</a>
                     <a href="{{ route('clientes.edit', $cliente->id_cliente) }}" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded">Editar</a>
@@ -75,6 +81,18 @@
                     <label class="block text-gray-700">RFC</label>
                     <input type="text" name="rfc" id="rfc" class="w-full p-2 border rounded" required>
                 </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700">Razon Social</label>
+                    <input type="text" name="razon_social" id="razon_social" class="w-full p-2 border rounded" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700">Codigo Postal</label>
+                    <input type="text" name="codigo_postal" id="codigo_postal" class="w-full p-2 border rounded" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700">Regimen Fiscal</label>
+                    <input type="text" name="regimen_fiscal" id="regimen_fiscal" class="w-full p-2 border rounded" required>
+                </div>
                 <div class="flex justify-end mt-4">
                     <button type="button" onclick="document.getElementById('modal').classList.add('hidden')" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mr-2">Cancelar</button>
                     <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Guardar</button>
@@ -106,6 +124,9 @@
                         document.getElementById('telefono').value = data.telefono;
                         document.getElementById('direccion').value = data.direccion;
                         document.getElementById('rfc').value = data.rfc;
+                        document.getElementById('razon_social').value = data.razon_social;
+                        document.getElementById('codigo_postal').value = data.codigo_postal;
+                        document.getElementById('regimen_fiscal').value = data.regimen_fiscal;
                         document.getElementById('modal').classList.remove('hidden');
                     });
             });

@@ -31,36 +31,44 @@ class ProductoController extends Controller
         Producto::create($request->all());
         return redirect()->route('productos.index');
     }
+    
     public function edit($id)
-{
-    $producto = Producto::findOrFail($id);
-    $categorias = Categoria::all();
+    {
+        $producto = Producto::findOrFail($id);
+        $categorias = Categoria::all();
 
-    return view('productos.edit', compact('producto', 'categorias'));
-}
+        return view('productos.edit', compact('producto', 'categorias'));
+    }
 
-public function update(Request $request, $id)
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'nombre' => 'required',
+            'categoria_id' => 'required',
+            'precio_venta' => 'required|numeric',
+            'precio_compra' => 'required|numeric',
+            'fecha_compra' => 'nullable|date',
+            'color' => 'required',
+            'descripcion_corta' => 'required',
+            'descripcion_larga' => 'required',
+        ]);
+        $producto = Producto::findOrFail($id);
 
-{
-    $request->validate([
-        'nombre' => 'required',
-        'categoria_id' => 'required',
-        'precio_venta' => 'required|numeric',
-        'precio_compra' => 'required|numeric',
-        'fecha_compra' => 'nullable|date',
-        'color' => 'required',
-        'descripcion_corta' => 'required',
-        'descripcion_larga' => 'required',
-    ]);
-    $producto = Producto::findOrFail($id);
+        $producto->update($request->all());
+        return redirect()->route('productos.index');
+    }
 
-    $producto->update($request->all());
-    return redirect()->route('productos.index');
-}
-public function destroy($id)
+    public function destroy($id)
     {
         $producto = Producto::findOrFail($id);
         $producto->delete();
         return redirect()->route('productos.index')->with('success', 'Producto eliminado exitosamente');
     }
+
+    public function show($id)
+    {
+        $producto = Producto::where('categoria_id', $id)->get();
+        return $producto;
+    }
+
 }

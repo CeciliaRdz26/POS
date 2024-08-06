@@ -24,6 +24,8 @@ class CreateProductosTable extends Migration
 
     public function down()
     {
+        Schema::disableForeignKeyConstraints();
         Schema::dropIfExists('productos');
+        Schema::enableForeignKeyConstraints();
     }
 }

@@ -7,7 +7,33 @@ use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\InventarioController;
 use App\Http\Controllers\VentaController;
+use App\Http\Controllers\CotizacionController;
+use App\Http\Controllers\FormasdepagoController;
+use App\Http\Controllers\VendedorController;
+use App\Http\Controllers\ProveedorController;
+use App\Http\Controllers\PDFController;
 
+Route::resource('productos', ProductoController::class)->except(['show']);
+
+Route::resource('categorias', CategoriaController::class);
+
+Route::resource('clientes', ClienteController::class);
+
+Route::resource('ventas', VentaController::class);
+
+Route::resource('inventarios', InventarioController::class)->except(['show']);
+
+Route::resource('cotizaciones', CotizacionController::class);
+
+Route::resource('formasdepago', FormasdepagoController::class);
+
+Route::resource('vendedor', VendedorController::class);
+
+Route::resource('proveedor', ProveedorController::class);
+
+Route::get('/pdf/{id}', [PDFController::class, 'report'])->name('pdf.report');
+
+Route::post('/cotizaciones', [CotizacionController::class, 'store'])->name('cotizaciones.store');
 
 Route::get('/', function () {
     return view('welcome');
@@ -24,17 +50,3 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
-
-
-Route::resource('productos', ProductoController::class);
-
-Route::resource('categorias', CategoriaController::class);
-
-
-Route::resource('clientes', ClienteController::class);
-
-
-Route::resource('ventas', VentaController::class);
-
-
-Route::resource('inventarios', InventarioController::class)->except(['show']);
