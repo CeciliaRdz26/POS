@@ -28,19 +28,23 @@ class CategoriaController extends Controller
         return view('categorias.edit', compact('categoria'));
     }
 
-    public function update(Request $request, Categoria $categoria)
+    public function update(Request $request, $id)
     {
         $request->validate([
             'nombre_categoria' => 'required',
+            'estatus' => 'required',
         ]);
 
-        $categoria->update($request->all());
+        
+        Categoria::where('id_categoria', $id)->update([
+            'nombre_categoria' => $request->nombre_categoria, 'estatus' => $request->estatus
+        ]);
         return redirect()->route('categorias.index')->with('success', 'Categoría actualizada exitosamente');
     }
 
-    public function destroy(Categoria $categoria)
+    public function destroy($id)
     {
-        $categoria->delete();
+        Categoria::where('id_categoria', $id)->update(['estatus' => 'Inactivo']);
         return redirect()->route('categorias.index')->with('success', 'Categoría eliminada exitosamente');
     }
 }

@@ -12,6 +12,7 @@ use App\Http\Controllers\FormasdepagoController;
 use App\Http\Controllers\VendedorController;
 use App\Http\Controllers\ProveedorController;
 use App\Http\Controllers\PDFController;
+use App\Http\Controllers\CompraController;
 
 Route::resource('productos', ProductoController::class)->except(['show']);
 
@@ -31,9 +32,17 @@ Route::resource('vendedor', VendedorController::class);
 
 Route::resource('proveedor', ProveedorController::class);
 
+Route::resource('compras', CompraController::class);
+
+Route::resource('reportes', PDFController::class);
+
 Route::get('/pdf/{id}', [PDFController::class, 'report'])->name('pdf.report');
 
+Route::get('/report/grafica', [PDFController::class, 'showGrafica']);
+
 Route::post('/cotizaciones', [CotizacionController::class, 'store'])->name('cotizaciones.store');
+
+Route::put('inventarios/{id}/edit', [InventarioController::class, 'update'])->name('inventario.update');
 
 Route::get('/', function () {
     return view('welcome');

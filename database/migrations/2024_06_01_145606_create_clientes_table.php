@@ -15,6 +15,7 @@ return new class extends Migration
             $table->string('telefono');
             $table->string('direccion');
             $table->string('rfc');
+            $table->enum('estatus', ['Activo', 'Inactivo'])->default('Activo');
             $table->timestamps();
         });
     }

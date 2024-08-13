@@ -12,12 +12,14 @@ class CreateProductosTable extends Migration
             $table->id('id_producto');
             $table->string('nombre');
             $table->foreignId('categoria_id')->constrained('categorias', 'id_categoria')->onDelete('cascade');
-            $table->decimal('precio_venta', 8, 2);
-            $table->decimal('precio_compra', 8, 2);
+            $table->double('precio_venta');
+            $table->double('precio_compra');
             $table->date('fecha_compra')->nullable();
+            $table->integer('cantidad');
             $table->string('color');
             $table->string('descripcion_corta');
             $table->text('descripcion_larga');
+            $table->enum('estatus', ['Activo', 'Inactivo'])->default('Activo');
             $table->timestamps();
         });
     }

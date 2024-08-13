@@ -37,10 +37,10 @@
             </thead>
             <tbody>
                 @foreach ($ventas as $venta)
-                @php
-                    $ventaproducto = "App\Models\VentaProducto"::where('id_venta', $venta->id_venta)->get();
-                    $total = 0;
-                @endphp
+                    @php
+                        $ventaproducto = ('App\Models\VentaProducto')::where('id_venta', $venta->id_venta)->get();
+                        $total = 0;
+                    @endphp
                     <tr>
                         <td class="py-2 px-4 border-b">{{ $loop->iteration }}</td>
                         <td class="py-2 px-4 border-b">{{ $venta->categoria->nombre_categoria }}</td>
@@ -51,24 +51,23 @@
                         <td class="py-2 px-4 border-b">{{ $venta->subtotal }}</td>
                         <td class="py-2 px-4 border-b">{{ $venta->iva }}</td>
                         <td class="py-2 px-4 border-b">{{ $venta->total }}</td>
-                        <td class="py-2 px-4 border-b">
+                        <th class="py-2 px-4 border-b">
                             <button onclick="mostrarDetalles('detalles_{{ $venta->id_venta }}')"
                                 class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded">
                                 Ver
                             </button>
                             <a href="{{ route('ventas.edit', $venta->id_venta) }}"
-                                class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded editVenta"
-                                >Editar</a>
-                            <form method="POST" action="{{ route('ventas.destroy', $venta->id_venta) }}"
+                                class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded editVenta">Editar</a>
+                            <form id="button-borrar-{{ $venta->id_venta }}" method="POST" action="{{ route('ventas.destroy', $venta->id_venta) }}"
                                 class="inline-block">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit"
+                                <button type="button" onclick="confirmar({{ $venta->id_venta }})"
                                     class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded">Eliminar</button>
                             </form>
-                        </td>
+                        </th>
                     </tr>
-                    <tr id="detalles_{{ $venta->id_venta}}" class="details">
+                    <tr id="detalles_{{ $venta->id_venta }}" class="details">
                         <td colspan="9">
                             <table class="min-w-full bg-white border">
                                 <thead>
@@ -81,12 +80,20 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($ventaproducto as $item)
-                                    <tr>
-                                        <td class="py-2 px-4 border-b"><center>{{ $item->producto->nombre }}</center></td>
-                                        <td class="py-2 px-4 border-b"><center>{{ $item->cantidad }}</center></td>
-                                        <td class="py-2 px-4 border-b"><center>$ {{ $item->precio_venta }}</center></td>
-                                        <td class="py-2 px-4 border-b"><center>$ {{ ($item->precio_venta * $item->cantidad) * 1.16 }}</center></td>
-                                    </tr>
+                                        <tr>
+                                            <td class="py-2 px-4 border-b">
+                                                <center>{{ $item->producto->nombre }}</center>
+                                            </td>
+                                            <td class="py-2 px-4 border-b">
+                                                <center>{{ $item->cantidad }}</center>
+                                            </td>
+                                            <td class="py-2 px-4 border-b">
+                                                <center>$ {{ $item->precio_venta }}</center>
+                                            </td>
+                                            <td class="py-2 px-4 border-b">
+                                                <center>$ {{ $item->precio_venta * $item->cantidad * 1.16 }}</center>
+                                            </td>
+                                        </tr>
                                     @endforeach
                                 </tbody>
                             </table>
@@ -169,6 +176,20 @@
     </div>
 
     <script>
+        function confirmar(id) {
+            Swal.fire({
+                title: 'Confirmacion!',
+                text: '¿Estas seguro de eliminar la venta?',
+                icon: 'warning',
+                confirmButtonText: 'Aceptar',
+                showCancelButton: true,
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('button-borrar-' + id).submit()
+                }
+            });
+        }
+
         // Variables
         let salida = [];
         let cantidades = [];
@@ -207,10 +228,11 @@
         // Agrega un producto a la lista
         document.getElementById('btn-add').addEventListener('click', function() {
             let producto = document.getElementById('producto_id').value;
-            let nameproducto = document.getElementById('producto_id').options[document.getElementById('producto_id').selectedIndex].text;
+            let nameproducto = document.getElementById('producto_id').options[document.getElementById('producto_id')
+                .selectedIndex].text;
             var productos = document.getElementById('productos').value;
             let div = document.getElementById('dataproducto');
-            
+
             // Verifica si el producto ya fue agregado
             if (!salida.includes(producto) && producto != "") {
                 salida.push(producto);
@@ -232,26 +254,29 @@
                 btnCantidad.id = producto;
                 btnCantidad.onchange = function() {
                     // Agrega la cantidad al input
-                    cantidades[salida.indexOf(producto)] = this.value; // Guarda la cantidad en el array dependiendo de donde esta el producto
+                    cantidades[salida.indexOf(producto)] = this
+                    .value; // Guarda la cantidad en el array dependiendo de donde esta el producto
                     document.getElementById('cantidades').value = cantidades;
                 };
                 btnCantidad.type = "number";
                 btnCantidad.className = "w-auto p-2 border rounded text-gray-700 font-bold rounded";
                 cuadro.appendChild(btnCantidad);
-                
+
                 // Agrega el boton para eliminar el producto
                 const btn = document.createElement('input');
                 btn.type = "button";
                 btn.onclick = function() {
                     // Elimina el producto del input
-                    document.getElementById('productos').value = document.getElementById('productos').value.replace(producto + ',', '');
-                    salida.splice(salida.indexOf(producto), 1 );
+                    document.getElementById('productos').value = document.getElementById('productos').value
+                        .replace(producto + ',', '');
+                    salida.splice(salida.indexOf(producto), 1);
                     cuadro.remove();
                 };
                 btn.value = "X";
-                btn.className = "w-auto p-2 border rounded text-gray-700 bg-red-500 hover:bg-red-700 text-white font-bold rounded";
+                btn.className =
+                    "w-auto p-2 border rounded text-gray-700 bg-red-500 hover:bg-red-700 text-white font-bold rounded";
                 cuadro.appendChild(btn);
-                
+
                 div.appendChild(cuadro);
 
                 // Agrega el producto al input
@@ -289,6 +314,5 @@
                 detalles.style.display = "none";
             }
         }
-
     </script>
 @endsection

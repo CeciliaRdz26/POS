@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('motivo');
             $table->string('movimiento');
             $table->decimal('cantidad');
+            $table->enum('estatus', ['Activo', 'Inactivo'])->default('Activo');
             $table->timestamps();
         });
     }

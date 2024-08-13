@@ -13,10 +13,12 @@
                 <th class="py-2 px-4 border-b">Categoría</th>
                 <th class="py-2 px-4 border-b">Precio de Venta</th>
                 <th class="py-2 px-4 border-b">Precio de Compra</th>
+                <th class="py-2 px-4 border-b">Cantidad</th>
                 <th class="py-2 px-4 border-b">Fecha de Compra</th>
                 <th class="py-2 px-4 border-b">Color</th>
                 <th class="py-2 px-4 border-b">Descripción Corta</th>
                 <th class="py-2 px-4 border-b">Descripción Larga</th>
+                <th class="py-2 px-4 border-b">Estatus</th>
                 <th class="py-2 px-4 border-b">Acciones</th>
             </tr>
         </thead>
@@ -27,16 +29,18 @@
                     <td class="py-2 px-4 border-b">{{ $producto->categoria->nombre_categoria }}</td>
                     <td class="py-2 px-4 border-b">{{ $producto->precio_venta }}</td>
                     <td class="py-2 px-4 border-b">{{ $producto->precio_compra }}</td>
+                    <td class="py-2 px-4 border-b">{{ $producto->cantidad }}</td>
                     <td class="py-2 px-4 border-b">{{ $producto->fecha_compra }}</td>
                     <td class="py-2 px-4 border-b">{{ $producto->color }}</td>
                     <td class="py-2 px-4 border-b">{{ $producto->descripcion_corta }}</td>
                     <td class="py-2 px-4 border-b">{{ $producto->descripcion_larga }}</td>
+                    <td class="py-2 px-4 border-b">{{ $producto->estatus }}</td>
                     <td class="py-2 px-4 border-b">
                         <a href="{{ route('productos.edit', $producto->id_producto) }}" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded">Editar</a>
-                        <form method="POST" action="{{ route('productos.destroy', $producto->id_producto) }}">
+                        <form id="button-borrar-{{ $producto->id_producto }}" method="POST" action="{{ route('productos.destroy', $producto->id_producto) }}">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded">Eliminar</button>
+                            <button type="button" onclick="confirmar({{ $producto->id_producto }}, '{{ $producto->nombre }}')" class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded">Eliminar</button>
                         </form>
                     </td>
                 </tr>
@@ -69,6 +73,10 @@
                     <input type="number" name="precio_venta" step="0.01" class="w-full p-2 border rounded" required>
                 </div>
                 <div>
+                    <label class="block text-gray-700">Cantidad</label>
+                    <input type="number" name="cantidad" min="0" class="w-full p-2 border rounded" required>
+                </div>
+                <div>
                     <label class="block text-gray-700">Precio de Compra</label>
                     <input type="number" name="precio_compra" step="0.01" class="w-full p-2 border rounded" required>
                 </div>
@@ -97,6 +105,22 @@
         </form>
     </div>
 </div>
+
+    <script>
+        function confirmar(id, producto) {
+            Swal.fire({
+                title: 'Confirmacion!',
+                text: '¿Estas seguro de eliminar el producto ['+producto+']?',
+                icon: 'warning',
+                confirmButtonText: 'Aceptar',
+                showCancelButton: true,
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('button-borrar-' + id).submit()
+                }
+            });
+        }
+    </script>
 
 </div>
 

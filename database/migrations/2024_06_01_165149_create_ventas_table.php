@@ -16,9 +16,10 @@ class CreateVentasTable extends Migration
                 $table->foreignId('pago_id')->constrained('formasdepago', 'id')->onDelete('cascade');
                 $table->foreignId('vendedor_id')->constrained('vendedor', 'id')->onDelete('cascade');
                 $table->date('fecha_venta');
-                $table->decimal('subtotal', 8, 2);
-                $table->decimal('iva', 8, 2);
-                $table->decimal('total', 8, 2);
+                $table->double('subtotal');
+                $table->double('iva');
+                $table->double('total');
+                $table->enum('estatus', ['Activo', 'Inactivo'])->default('Activo');
                 $table->timestamps();
             });
         }

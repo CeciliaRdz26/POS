@@ -36,7 +36,7 @@ class InventarioController extends Controller
         Inventario::create($request->all());
 
         return redirect()->route('inventarios.index')
-            ->with('success', 'Venta creada exitosamente.');
+            ->with('success', 'Creada exitosamente.');
     }
 
     public function edit($id)
@@ -64,7 +64,7 @@ class InventarioController extends Controller
         $inventario->update($request->all());
 
         return redirect()->route('inventarios.index')
-            ->with('success', 'Venta actualizada exitosamente.');
+            ->with('success', 'Actualizada exitosamente.');
     }
 
     public function destroy($id)
@@ -72,7 +72,7 @@ class InventarioController extends Controller
         Inventario::find($id)->delete();
 
         return redirect()->route('inventarios.index')
-            ->with('success', 'Venta eliminada exitosamente.');
+            ->with('success', 'Eliminada exitosamente.');
     }
 
 

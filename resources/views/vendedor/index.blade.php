@@ -29,18 +29,18 @@
                         <td class="py-2 px-4 border-b">{{ $persona->nombre }}</td>
                         <td class="py-2 px-4 border-b">{{ $persona->correo }}</td>
                         <td class="py-2 px-4 border-b">{{ $persona->telefono }}</td>
-                        <td class="py-2 px-4 border-b">
+                        <th class="py-2 px-4 border-b">
                             <a href="#"
                                 class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded editVe"
                                 onclick="editVendedor({{ $persona }})">Editar</a>
-                            <form method="POST" action="{{ route('vendedor.destroy', $persona->id) }}"
+                            <form id="button-borrar-{{ $persona->id }}" method="POST" action="{{ route('vendedor.destroy', $persona->id) }}"
                                 class="inline-block">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit"
+                                <button type="button" onclick="confirmar({{ $persona->id }}, '{{ $persona->nombre }}')"
                                     class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded">Eliminar</button>
                             </form>
-                        </td>
+                        </th>
                     </tr>
                 @endforeach
             </tbody>
@@ -78,6 +78,20 @@
     </div>
 
     <script>
+        function confirmar(id, vendedor) {
+            Swal.fire({
+                title: 'Confirmacion!',
+                text: '¿Estas seguro de eliminar al vendedor ['+vendedor+']?',
+                icon: 'warning',
+                confirmButtonText: 'Aceptar',
+                showCancelButton: true,
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('button-borrar-' + id).submit()
+                }
+            });
+        }
+
         function editVendedor(persona) {
             document.getElementById('modal').classList.remove('hidden');
             document.getElementById('modal-title').innerText = 'Editar vededor';

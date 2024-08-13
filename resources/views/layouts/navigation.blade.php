@@ -9,7 +9,7 @@
 
     <!-- Lista de Enlaces de Navegación -->
     <div class="flex flex-col p-4 space-y-2">
-        <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+        <x-nav-link :href="route('reportes.index')" :active="request()->routeIs('reportes.index')">
             {{ __('Dashboard') }}
         </x-nav-link>
         <x-nav-link :href="route('productos.index')" :active="request()->routeIs('productos.index')">
@@ -38,6 +38,10 @@
         </x-nav-link>
         <x-nav-link :href="route('proveedor.index')" :active="request()->routeIs('proveedor.index')">
             {{ __('Proveedor') }}
+        </x-nav-link>
+        
+        <x-nav-link :href="route('compras.index')" :active="request()->routeIs('compras.index')">
+            {{ __('Compras') }}
         </x-nav-link>
     </div>
 

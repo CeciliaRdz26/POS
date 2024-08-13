@@ -2,10 +2,10 @@
 
 @section('content')
     <div class="container mx-auto mt-8">
-        <h1 class="text-2xl font-bold mb-4">Cotizacion</h1>
+        <h1 class="text-2xl font-bold mb-4">Compras</h1>
         <div class="mb-4">
             <button onclick="document.getElementById('modal').classList.remove('hidden')"
-                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Crear cotizacion</button>
+                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Crear compra</button>
         </div>
 
         <style>
@@ -24,18 +24,17 @@
             <thead>
                 <tr>
                     <th class="py-2 px-4 border-b">N°</th>
-                    <th class="py-2 px-4 border-b">Cliente</th>
-                    <th class="py-2 px-4 border-b">Fecha</th>
-                    <th class="py-2 px-4 border-b">Vigencia</th>
-                    <th class="py-2 px-4 border-b">Comentario</th>
+                    <th class="py-2 px-4 border-b">Proveedor</th>
+                    <th class="py-2 px-4 border-b">Fecha de compra</th>
+                    <th class="py-2 px-4 border-b">Estatus</th>
                     <th class="py-2 px-4 border-b">Acciones</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach ($cotizacion as $valor)
+                @foreach ($compras as $valor)
                     @php
-                        $cotizacionproducto = ('App\Models\CotizacionProducto')
-                            ::where('id_cotizacion', $valor->id_cotizaciones)
+                        $comprasproducto = ('App\Models\CompraProducto')
+                            ::where('id_compra', $valor->id_compra)
                             ->get();
                         $total = 0;
                         $subtotal = 0;
@@ -43,32 +42,27 @@
                     @endphp
                     <tr>
                         <td class="py-2 px-4 border-b">{{ $loop->iteration }}</td>
-                        <td class="py-2 px-4 border-b">{{ $valor->cliente->nombre }}</td>
-                        <td class="py-2 px-4 border-b">{{ $valor->fecha_cot }}</td>
-                        <td class="py-2 px-4 border-b">{{ $valor->vigencia }}</td>
-                        <td class="py-2 px-4 border-b">{{ $valor->comentarios }}</td>
+                        <td class="py-2 px-4 border-b">{{ $valor->proveedor->nombre_contacto }}</td>
+                        <td class="py-2 px-4 border-b">{{ $valor->fecha_compra }}</td>
+                        <td class="py-2 px-4 border-b">{{ $valor->estatus }}</td>
                         <th class="py-2 px-4 border-b">
-                            <button onclick="mostrarDetalles('detalles_{{ $valor->id_cotizaciones }}')"
+                            <button onclick="mostrarDetalles('detalles_{{ $valor->id_compra }}')"
                                 class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded">
                                 Ver
                             </button>
-                            <a href="{{ route('cotizaciones.edit', $valor->id_cotizaciones) }}"
+                            <a href="{{ route('compras.edit', $valor->id_compra) }}"
                                 class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded">
                                 Editar
                             </a>
-                            <form id="button-borrar-{{ $valor->id_cotizaciones }}" action="{{ route('cotizaciones.destroy', $valor) }}" method="POST" class="inline-block">
+                            <form id="button-borrar-{{ $valor->id_compra }}" action="{{ route('compras.destroy', $valor) }}" method="POST" class="inline-block">
                                 @csrf
                                 @method('DELETE')
-                                <button type="button" onclick="confirmar({{ $valor->id_cotizaciones }}, '{{ $valor->cliente->nombre }}')"
+                                <button type="button" onclick="confirmar({{ $valor->id_compra }}, '{{ $valor->proveedor->nombre_contacto }}')"
                                     class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded">Eliminar</button>
                             </form>
-                            <a href="{{ route('pdf.report', $valor->id_cotizaciones) }}"
-                                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded">
-                                Crear pdf
-                            </a>
                         </th>
                     </tr>
-                    <tr id="detalles_{{ $valor->id_cotizaciones }}" class="details">
+                    <tr id="detalles_{{ $valor->id_compra }}" class="details">
                         <td colspan="6">
                             <table class="min-w-full bg-white border">
                                 <thead>
@@ -80,7 +74,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($cotizacionproducto as $item)
+                                    @foreach ($comprasproducto as $item)
                                         <tr>
                                             <td class="py-2 px-4 border-b">
                                                 <center>{{ $item->producto->nombre }}</center>
@@ -128,15 +122,18 @@
         <div id="modal"
             class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center overflow-auto hidden">
             <div class="bg-white p-4 rounded-lg shadow-lg max-h-full max-w-md w-full">
-                <h2 class="text-xl font-bold mb-4" id="modalTitle">Crear cotizacion</h2>
-                <form id="cotizaForm" method="POST" action="{{ route('cotizaciones.store') }}">
+                <h2 class="text-xl font-bold mb-4" id="modalTitle">Crear compra</h2>
+                <form id="compraForm" method="POST" action="{{ route('compras.store') }}">
                     @csrf
                     <div class="mb-4 flex items-center space-x-4">
                         <div>
                             <label class="block text-gray-700">Producto</label>
-                            <select name="id_producto" id="id_producto" class="w-full p-2 border rounded">
+                            <select name="id_producto" id="id_producto"
+                                class="select2 w-full p-2 border rounded">
                                 @foreach ($producto as $item)
-                                    <option value="{{ $item->id_producto }}">{{ $item->nombre }}</option>
+                                    @if ($item->cantidad > 0 && $item->estatus == 'Activo')
+                                        <option value="{{ $item->id_producto }}">{{ $item->nombre }}</option>
+                                    @endif
                                 @endforeach
                             </select>
                         </div>
@@ -149,24 +146,18 @@
                     </div>
                     <hr>
                     <div class="mb-4">
-                        <label class="block text-gray-700">Cliente</label>
-                        <select name="id_cliente" id="id_cliente" class="w-full p-2 border rounded">
-                            @foreach ($cliente as $item)
-                                <option value="{{ $item->id_cliente }}">{{ $item->nombre }}</option>
+                        <label class="block text-gray-700">Proveedor</label>
+                        <select name="id_proveedor" id="id_proveedor"
+                            class="form-control select2 w-full p-2 border rounded">
+                            @foreach ($proveedor as $item)
+                                <option value="{{ $item->id }}">{{ $item->nombre }}</option>
                             @endforeach
                         </select>
                     </div>
                     <div class="mb-4">
-                        <label class="block text-gray-700">Fecha de cotización</label>
-                        <input type="date" name="fecha_cot" id="fecha_cot" class="w-full p-2 border rounded" required>
-                    </div>
-                    <div class="mb-4">
-                        <label class="block text-gray-700">Vigencia</label>
-                        <input type="date" name="vigencia" id="vigencia" class="w-full p-2 border rounded" required>
-                    </div>
-                    <div class="mb-4">
-                        <label class="block text-gray-700">Comentario</label>
-                        <textarea name="comentario" id="comentario" class="w-full p-2 border rounded" required></textarea>
+                        <label class="block text-gray-700">Fecha de compra</label>
+                        <input type="date" name="fecha_compra" id="fecha_compra" class="w-full p-2 border rounded"
+                            required>
                     </div>
 
                     <div class="flex justify-end mt-4">
@@ -174,8 +165,7 @@
                             class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mr-2">
                             Cancelar
                         </button>
-                        <button type="submit"
-                            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                             Guardar
                         </button>
                     </div>
@@ -183,12 +173,18 @@
             </div>
         </div>
     </div>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
 
     <script>
+        const today = new Date().toISOString().split("T")[0];
+        const dateinput = document.getElementById('fecha_compra');
+        dateinput.min = today;
+
         function confirmar(id, cliente) {
             Swal.fire({
                 title: 'Confirmacion!',
-                text: '¿Estas seguro de eliminar la cotización del cliente [' + cliente + ']?',
+                text: '¿Estas seguro de eliminar la compra del cliente [' + cliente + ']?',
                 icon: 'warning',
                 confirmButtonText: 'Aceptar',
                 showCancelButton: true,
@@ -206,7 +202,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('createNewCliente').addEventListener('click', function() {
                 document.getElementById('modalTitle').innerText = 'Crear cotización';
-                document.getElementById('cotizaForm').reset();
+                document.getElementById('compraForm').reset();
                 document.getElementById('modal').classList.remove('hidden');
             });
         });
@@ -214,11 +210,10 @@
         // Agrega un producto a la lista
         document.getElementById('btn-add').addEventListener('click', function() {
             let producto = document.getElementById('id_producto').value;
-            let nameproducto = document.getElementById('id_producto').options[document.getElementById('id_producto')
-                .selectedIndex].text;
+            let nameproducto = document.getElementById('id_producto').options[document.getElementById('id_producto').selectedIndex].text;
             var productos = document.getElementById('productos').value;
             let div = document.getElementById('dataproducto');
-
+            
             // Verifica si el producto ya fue agregado
             if (!salida.includes(producto)) {
                 salida.push(producto);
@@ -240,8 +235,7 @@
                 btnCantidad.id = producto;
                 btnCantidad.onchange = function() {
                     // Agrega la cantidad al input
-                    cantidades[salida.indexOf(producto)] = this
-                        .value; // Guarda la cantidad en el array dependiendo de donde esta el producto
+                    cantidades[salida.indexOf(producto)] = this.value; // Guarda la cantidad en el array dependiendo de donde esta el producto
                     document.getElementById('cantidades').value = cantidades;
                 };
                 btnCantidad.type = "number";
@@ -253,8 +247,7 @@
                 btn.type = "button";
                 btn.onclick = function() {
                     // Elimina el producto del input
-                    document.getElementById('productos').value = document.getElementById('productos').value
-                        .replace(producto + ',', '');
+                    document.getElementById('productos').value = document.getElementById('productos').value.replace(producto + ',', '');
                     salida.splice(salida.indexOf(producto), 1);
                     cuadro.remove();
                 };
@@ -267,6 +260,8 @@
 
                 // Agrega el producto al input
                 document.getElementById('productos').value = salida;
+            }else{
+                console.table(salida)
             }
         });
 

@@ -11,12 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('ventasproducto', function (Blueprint $table) {
+        Schema::create('formasdepago', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('id_venta')->constrained('ventas', 'id_venta')->onDelete('cascade');
-            $table->foreignId('id_producto')->constrained('productos', 'id_producto')->onDelete('cascade');
-            $table->double('precio_venta');
-            $table->integer('cantidad');
+            $table->string('tipo', 150);
             $table->enum('estatus', ['Activo', 'Inactivo'])->default('Activo');
             $table->timestamps();
         });
@@ -27,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('ventasproducto');
+        Schema::dropIfExists('formasdepago');
     }
 };

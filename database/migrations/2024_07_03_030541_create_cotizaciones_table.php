@@ -20,6 +20,7 @@ class CreateCotizacionesTable extends Migration
                 $table->date('fecha_cot');
                 $table->date('vigencia');
                 $table->text('comentarios')->nullable();
+                $table->enum('estatus', ['Activo', 'Inactivo'])->default('Activo');
                 $table->timestamps();
             });
         }

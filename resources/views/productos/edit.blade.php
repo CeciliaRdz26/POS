@@ -17,7 +17,7 @@
                 <select name="categoria_id" id="categoria_id" class="w-full p-2 border rounded" required>
                     <option value="">Seleccione una categoría</option>
                     @foreach($categorias as $categoria)
-                        <option value="{{ $categoria->id_categoria }}">{{ $categoria->nombre_categoria }}</option>
+                        <option value="{{ $categoria->id_categoria }}" {{ $categoria->id_categoria == $producto->categoria_id ? 'selected' : '' }}>{{ $categoria->nombre_categoria }}</option>
                     @endforeach
                 </select>
             </div>
@@ -34,6 +34,10 @@
                 <input type="date" name="fecha_compra" value="{{ $producto->fecha_compra }}" class="w-full p-2 border rounded">
             </div>
             <div>
+                <label class="block text-gray-700">Cantidad</label>
+                <input type="number" name="cantidad" min="0" value="{{ $producto->cantidad }}" class="w-full p-2 border rounded">
+            </div>
+            <div>
                 <label class="block text-gray-700">Color</label>
                 <input type="text" name="color" value="{{ $producto->color }}" class="w-full p-2 border rounded" required>
             </div>
@@ -44,6 +48,13 @@
             <div>
                 <label class="block text-gray-700">Descripción Larga</label>
                 <textarea name="descripcion_larga" class="w-full p-1 border rounded" required>{{ $producto->descripcion_larga }}</textarea>
+            </div>
+            <div>
+                <label class="block text-gray-700">Estatus</label>
+                <select name="estatus" id="estatus" class="w-full p-2 border rounded" required>
+                    <option value="Activo" {{ $producto->estatus == 'Activo' ? 'selected' : '' }}>Activo</option>
+                    <option value="Inactivo" {{ $producto->estatus == 'Inactivo' ? 'selected' : '' }}>Inactivo</option>
+                </select>
             </div>
         </div>
         <div class="flex justify-end mt-4">

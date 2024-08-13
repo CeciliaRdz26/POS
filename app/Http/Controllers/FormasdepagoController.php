@@ -35,12 +35,14 @@ class FormasdepagoController extends Controller
     {
         $request->validate([
             'nombre_tipo' => 'required',
+            'estatus' => 'required',
         ]);
 
         $pago = Pago::find($id);
         
         $pago->update([
             'tipo' => $request['nombre_tipo'],
+            'estatus' => $request['estatus'],
         ]);
 
         return redirect()->route('formasdepago.index')->with('success', 'Tipo de pago actualizado exitosamente');
@@ -49,9 +51,8 @@ class FormasdepagoController extends Controller
     public function destroy($id)
     {
         
-        $pagos = Pago::find($id);
-        $pagos->delete();
+        Pago::where('id', $id)->update(['estatus' => 'Inactivo']);
         
-        return redirect()->route('formasdepago.index')->with('success', 'Tipo de pago eliminado exitosamente');
+        return redirect()->route('formasdepago.index')->with('success', 'Tipo de pago desabilitado exitosamente');
     }
 }

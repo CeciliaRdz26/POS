@@ -2,38 +2,30 @@
 
 @section('content')
     <div class="container mx-auto mt-8">
-        <h1 class="text-2xl font-bold mb-4">Editar Cotización</h1>
-        <form method="POST" action="{{ route('cotizaciones.update', $cotizacion->id_cotizaciones) }}">
+        <h1 class="text-2xl font-bold mb-4">Editar compra</h1>
+        <form method="POST" action="{{ route('compras.update', $compras->id_compra) }}">
             @csrf
             @method('PUT')
             <div class="mb-4 grid grid-cols-2 gap-4">
                 <div>
-                    <label class="block text-gray-700">Cliente</label>
-                    <select name="id_cliente" id="id_cliente" class="w-full p-2 border rounded">
-                        @foreach ($clientes as $item)
-                            <option value="{{ $item->id_cliente }}"
-                                {{ $cotizacion->id_cliente == $item->id_cliente ? 'selected' : '' }}>
-                                {{ $item->nombre }}</option>
+                    <label class="block text-gray-700">Proveedor</label>
+                    <select name="id_proveedor" id="id_proveedor" class="w-full p-2 border rounded">
+                        @foreach ($proveedor as $item)
+                            <option value="{{ $item->id }}"
+                                {{ $compras->id_proveedor == $item->id ? 'selected' : '' }}>
+                                {{ $item->nombre_contacto }}
+                            </option>
                         @endforeach
                     </select>
                 </div>
                 <div>
-                    <label class="block text-gray-700">Fecha de Cotización</label>
-                    <input type="date" name="fecha_cot" value="{{ $cotizacion->fecha_cot }}"
+                    <label class="block text-gray-700">Fecha de compra</label>
+                    <input type="date" name="fecha_compra" value="{{ $compras->fecha_compra }}"
                         class="w-full p-2 border rounded" required>
-                </div>
-                <div>
-                    <label class="block text-gray-700">Vigencia</label>
-                    <input type="date" name="vigencia" value="{{ $cotizacion->vigencia }}"
-                        class="w-full p-2 border rounded" required>
-                </div>
-                <div>
-                    <label class="block text-gray-700">Comentarios</label>
-                    <textarea name="comentarios" class="w-full p-2 border rounded">{{ $cotizacion->comentarios }}</textarea>
                 </div>
             </div>
 
-            <div class="mb-4 grid grid-cols-4 gap-4">
+            <div class="mb-4 grid grid-cols-5 gap-5">
                 <table class="min-w-full bg-white border">
                     <thead>
                         <tr>
@@ -45,14 +37,14 @@
                     </thead>
                     @php
                         // Obtiene los productos de la cotización
-                        $cotizacionproducto = ('App\Models\CotizacionProducto')
-                            ::where('id_cotizacion', $cotizacion->id_cotizaciones)
+                        $comprasproducto = ('App\Models\CompraProducto')
+                            ::where('id_compra', $compras->id_compra)
                             ->get();
                     @endphp
                     <input type="hidden" name="total_campos" id="total_campos" value="">
                     <tbody>
                         <!-- Muestra los productos de la cotización -->
-                        @foreach ($cotizacionproducto as $item)
+                        @foreach ($comprasproducto as $item)
                             <tr>
                                 <input type="hidden" name="producto-id-{{ $item->id }}"
                                     id="producto-id-{{ $item->id }}">
@@ -61,7 +53,7 @@
                                 </td>
                                 <td class="py-2 px-4 border-b">
                                     <center>
-                                        <input type="number" id="cantidad-id-{{ $item->id }}"
+                                        <input type="number" min="0" id="cantidad-id-{{ $item->id }}"
                                             name="cantidad-id-{{ $item->id }}" value="{{ $item->cantidad }}"
                                             class="w-16 p-2 border rounded" required>
                                     </center>
@@ -78,10 +70,11 @@
                         @endforeach
                     </tbody>
                 </table>
-                <!-- Agrega los productos nuevos -->
-                <div id="dataproducto">
-                </div>
+                
+                
             </div>
+            <!-- Agrega los productos nuevos -->
+            <div id="dataproducto"></div>
 
             <div class="flex justify-end mt-4">
                 <button type="button" onclick="addProducto()"
@@ -100,13 +93,13 @@
             var totalDatos = 0; // Total de datos nuevos
 
             // Agrega los productos ya seleccionados
-            @foreach ($cotizacionproducto as $item)
+            @foreach ($comprasproducto as $item)
                 // Agrega el producto a la lista de productos tomados
                 productosTomados.push('{{ $item->id_producto }}');
             @endforeach
 
             // Calcula el total de la cotización
-            @foreach ($cotizacionproducto as $item)
+            @foreach ($comprasproducto as $item)
                 // Calcula el total
                 document.getElementById('cantidad-id-{{ $item->id }}').addEventListener('input', function() {
                     var cantidad = document.getElementById('cantidad-id-{{ $item->id }}').value;

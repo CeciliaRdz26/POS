@@ -9,21 +9,16 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-
-    /*  
-            'subtotal' => $subtotal,
-            'iva' => 1.16,
-            'total' => $subtotal*1.16
-    */
-
-     public function up(): void
+    public function up(): void
     {
-        Schema::create('cotizacionproducto', function (Blueprint $table) {
+        Schema::create('compras_productos', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('id_cotizacion')->constrained('cotizaciones', 'id_cotizaciones')->onDelete('cascade');
-            $table->foreignId('id_producto')->constrained('productos', 'id_producto')->onDelete('cascade');
-            $table->double('precio_venta');
+            $table->unsignedBigInteger('id_compra');
+            $table->foreign('id_compra')->references('id_compra')->on('compras');
+            $table->unsignedBigInteger('id_producto');
+            $table->foreign('id_producto')->references('id_producto')->on('productos');
             $table->integer('cantidad');
+            $table->double('precio_venta');
             $table->double('subtotal');
             $table->double('iva');
             $table->double('total');
@@ -37,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('cotizacionproducto');
+        Schema::dropIfExists('compras_productos');
     }
 };

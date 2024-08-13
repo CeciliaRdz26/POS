@@ -37,6 +37,12 @@ class CotizacionController extends Controller
         $cotizacion->comentarios = $request->comentario;
         $cotizacion->save();
 
+        /*  
+            'subtotal' => $subtotal,
+            'iva' => 1.16,
+            'total' => $subtotal*1.16
+        */
+
         // Separar los productos y cantidades en arreglos
         $productos = explode(",", $request->productos);
         $cantidades = explode(",", $request->cantidades);
@@ -48,6 +54,9 @@ class CotizacionController extends Controller
             $cotizacionProducto->id_producto = $productos[$i];
             $cotizacionProducto->precio_venta = Producto::find($productos[$i])->precio_venta;
             $cotizacionProducto->cantidad = $cantidades[$i];
+            $cotizacionProducto->subtotal = $cantidades[$i] * Producto::find($productos[$i])->precio_venta;
+            $cotizacionProducto->iva = $cotizacionProducto->subtotal * 0.16;
+            $cotizacionProducto->total = $cotizacionProducto->subtotal + $cotizacionProducto->iva;
             $cotizacionProducto->save();
         }
 
@@ -83,7 +92,7 @@ class CotizacionController extends Controller
             'comentarios' => $request->comentarios
         ]);
 
-        $totalCampos = $request->totalCampos;
+        $totalCampos = $request['total_campos'];
         $cotizacionproducto = CotizacionProducto::where('id_cotizacion', $id)->get();
 
         foreach ($cotizacionproducto as $cotizacionProduc) {
@@ -95,17 +104,19 @@ class CotizacionController extends Controller
         }
 
         if($totalCampos){
-            for ($i=0; $i == $totalCampos; $i++) {
+            for ($i=0; $i < $totalCampos; $i++) {
                 $cotizacionNewProducto = new CotizacionProducto();
                 $cotizacionNewProducto->id_cotizacion = $id;
                 $cotizacionNewProducto->id_producto = $request['producto-'.$i+1];
                 $cotizacionNewProducto->precio_venta = Producto::find($request['producto-'.$i+1])->precio_venta;
                 $cotizacionNewProducto->cantidad = $request['cantidad-'.$i+1];
+                $cotizacionNewProducto->subtotal = $request['cantidad-'.$i+1] * Producto::find($request['producto-'.$i+1])->precio_venta;
+                $cotizacionNewProducto->iva = $cotizacionNewProducto->subtotal * 0.16;
+                $cotizacionNewProducto->total = $cotizacionNewProducto->subtotal + $cotizacionNewProducto->iva;
                 $cotizacionNewProducto->save();
             }
         }
-
-        //echo $request;
+        
         return redirect()->route('cotizaciones.index')->with('success', 'Cotización actualizada con éxito');
     }
 

@@ -13,5 +13,6 @@ class Pago extends Model
 
     protected $fillable = [
         'tipo',
+        'estatus',
     ];
 }

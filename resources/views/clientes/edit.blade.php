@@ -28,6 +28,18 @@
                     <label class="block text-gray-700">RFC</label>
                     <input type="text" name="rfc" value="{{ $cliente->rfc }}" class="w-full p-2 border rounded" required>
                 </div>
+                <div>
+                    <label class="block text-gray-700">Razon social</label>
+                    <input type="text" name="razon_social" value="{{ $cliente->razon_social }}" class="w-full p-2 border rounded" required>
+                </div>
+                <div>
+                    <label class="block text-gray-700">Codigo postal</label>
+                    <input type="text" name="codigo_postal" value="{{ $cliente->codigo_postal }}" class="w-full p-2 border rounded" required>
+                </div>
+                <div>
+                    <label class="block text-gray-700">Regimen fiscal</label>
+                    <input type="text" name="regimen_fiscal" value="{{ $cliente->regimen_fiscal }}" class="w-full p-2 border rounded" required>
+                </div>
 
             <div class="flex justify-end mt-4">
                 <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Guardar</button>

@@ -10,6 +10,7 @@
         <thead>
             <tr>
                 <th class="py-2 px-4 border-b">Nombre</th>
+                <th class="py-2 px-4 border-b">Estatus</th>
                 <th class="py-2 px-4 border-b">Acciones</th>
             </tr>
         </thead>
@@ -17,14 +18,15 @@
             @foreach($categorias as $categoria)
                 <tr>
                     <td class="py-2 px-4 border-b">{{ $categoria->nombre_categoria }}</td>
-                    <td class="py-2 px-4 border-b">
+                    <td class="py-2 px-4 border-b">{{ $categoria->estatus }}</td>
+                    <th class="py-2 px-4 border-b">
                         <button onclick="editCategoria({{ $categoria }})" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded">Editar</button>
-                        <form action="{{ route('categorias.destroy', $categoria) }}" method="POST" class="inline">
+                        <form id="button-borrar-{{ $categoria->id_categoria }}" action="{{ route('categorias.destroy', $categoria->id_categoria) }}" method="POST" class="inline">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded">Eliminar</button>
+                            <button type="button" onclick="confirmar({{ $categoria->id_categoria }}, '{{ $categoria->nombre_categoria }}')" class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded">Eliminar</button>
                         </form>
-                    </td>
+                    </th>
                 </tr>
             @endforeach
         </tbody>
@@ -41,6 +43,13 @@
                     <label class="block text-gray-700">Nombre</label>
                     <input type="text" id="nombre_categoria" name="nombre_categoria" class="w-full p-2 border rounded" required>
                 </div>
+                <div id="div-estatus" style="display: none" class="mb-4">
+                    <label class="block text-gray-700">Estatus</label>
+                    <select id="estatus" name="estatus" class="w-full p-2 border rounded">
+                        <option value="Activo" selected>Activo</option>
+                        <option value="Inactivo">Inactivo</option>
+                    </select>
+                </div>
                 <div class="flex justify-end mt-4">
                     <button type="button" onclick="closeModal()" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mr-2">Cancelar</button>
                     <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Guardar</button>
@@ -50,10 +59,26 @@
     </div>
 </div>
 
+
 <script>
+    function confirmar(id, categoria) {
+        Swal.fire({
+            title: 'Confirmacion!',
+            text: '¿Estas seguro de eliminar el categoria ['+categoria+']?',
+            icon: 'warning',
+            confirmButtonText: 'Aceptar',
+            showCancelButton: true,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('button-borrar-' + id).submit()
+            }
+        });
+    }
+
     function editCategoria(categoria) {
         document.getElementById('modal').classList.remove('hidden');
         document.getElementById('modal-title').innerText = 'Editar Categoría';
+        document.getElementById('div-estatus').style.display = 'block';
         document.getElementById('nombre_categoria').value = categoria.nombre_categoria;
         document.getElementById('categoria-form').action = '/categorias/' + categoria.id_categoria;
         document.getElementById('method').value = 'PUT';
@@ -63,6 +88,7 @@
         document.getElementById('modal').classList.add('hidden');
         document.getElementById('modal-title').innerText = 'Agregar Categoría';
         document.getElementById('nombre_categoria').value = '';
+        document.getElementById('div-estatus').style.display = 'none';
         document.getElementById('categoria-form').action = '{{ route('categorias.store') }}';
         document.getElementById('method').value = 'POST';
     }
