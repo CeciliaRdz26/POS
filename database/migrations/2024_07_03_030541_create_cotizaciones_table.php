@@ -13,17 +13,15 @@ class CreateCotizacionesTable extends Migration
      */
     public function up()
     {
-        if (!Schema::hasTable('cotizaciones')) {
-            Schema::create('cotizaciones', function (Blueprint $table) {
-                $table->id('id_cotizaciones');
-                $table->foreignId('id_cliente')->constrained('clientes', 'id_cliente')->onDelete('cascade');
-                $table->date('fecha_cot');
-                $table->date('vigencia');
-                $table->text('comentarios')->nullable();
-                $table->enum('estatus', ['Activo', 'Inactivo'])->default('Activo');
-                $table->timestamps();
-            });
-        }
+        Schema::create('cotizaciones', function (Blueprint $table) {
+            $table->id('id_cotizaciones');
+            $table->foreignId('id_cliente')->constrained('clientes', 'id_cliente')->onDelete('cascade');
+            $table->date('fecha_cot');
+            $table->date('vigencia');
+            $table->text('comentarios')->nullable();
+            $table->enum('estatus', ['Activo', 'Inactivo'])->default('Activo');
+            $table->timestamps();
+        });
     }
 
     /**
