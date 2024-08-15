@@ -14,7 +14,8 @@ return new class extends Migration
         if (!Schema::hasTable('compras')) {
             Schema::create('compras', function (Blueprint $table) {
                 $table->id('id_compra');
-                $table->foreignId('id_proveedor')->constrained('proveedor', 'id_proveedor')->onDelete('cascade');
+                //$table->unsignedBigInteger('id_proveedor');
+                $table->foreign('id_proveedor')->references('id_proveedor')->on('proveedores');
                 $table->date('fecha_compra');
                 $table->enum('estatus', ['Activo', 'Inactivo'])->default('Activo');
                 $table->timestamps();
