@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('compras', function (Blueprint $table) {
             $table->id('id_compra');
-            $table->foreignId('id_proveedor')->constrained('proveedor', 'id_proveedor')->onDelete('cascade');
+            $table->foreignId('id_proveedor')->constrained('proveedor', 'id')->onDelete('cascade');
             $table->date('fecha_compra');
             $table->enum('estatus', ['Activo', 'Inactivo'])->default('Activo');
             $table->timestamps();
